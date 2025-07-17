@@ -1,17 +1,33 @@
-     export default async function handler(req, res) {
-       const zapierUrl = 'https://hooks.zapier.com/hooks/catch/12008416/u2fcjet/';
-       const params = req.query;
+export default async function handler(req, res) {
+  // Extract query params
+  const inputData = req.query;
 
-       // Forward params to Zapier
-       await fetch(zapierUrl, {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify(params),
-       });
+  // Get IP and User Agent
+  const ip = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || 'IP-not-found';
+  const userAgent = req.headers['user-agent'] || 'UA-not-found';
+  const baseUrl = 'https://offer.ecom-unity.eu/loopbrandanalysis';
 
-       // Redirect to your landing page with original params
-       const landingUrl = 'https://offer.ecom-unity.eu/loopbrandanalysis/'; // CHANGE THIS!
-       const search = new URLSearchParams(params).toString();
-       res.writeHead(302, { Location: `${landingUrl}?${search}` });
-       res.end();
-     }
+  // Build query params
+  const params = new URLSearchParams({
+    utm_source: inputData.utm_source || '',
+    utm_medium: inputData.utm_medium || '',
+    utm_campaign: inputData.utm_campaign || '',
+    utm_content: inputData.utm_content || '',
+    fbclid: inputData.fbclid || '',
+    hsa_acc: inputData.hsa_acc || '',
+    hsa_cam: inputData.hsa_cam || '',
+    hsa_grp: inputData.hsa_grp || '',
+    hsa_ad: inputData.hsa_ad || '',
+    hsa_src: inputData.hsa_src || '',
+    hsa_net: inputData.hsa_net || '',
+    hsa_ver: inputData.hsa_ver || '',
+    ip: ip,
+    ua: userAgent
+  });
+
+  const finalUrl = `${baseUrl}?${params.toString()}`;
+
+  // Redirect user to the final URL
+  res.writeHead(302, { Location: finalUrl });
+  res.end();
+}
