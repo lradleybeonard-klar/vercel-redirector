@@ -10,7 +10,7 @@
        });
 
        // Redirect to your landing page with original params
-       const landingUrl = 'https://your-landing-page.com'; // CHANGE THIS!
+       const landingUrl = 'https://offer.ecom-unity.eu/loopbrandanalysis/'; // CHANGE THIS!
        const search = new URLSearchParams(params).toString();
        res.writeHead(302, { Location: `${landingUrl}?${search}` });
        res.end();
